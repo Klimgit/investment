@@ -1,0 +1,208 @@
+\documentclass[a4paper,12pt]{extarticle}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{dsfont}
+\usepackage[lmargin=71pt, tmargin=1.2in]{geometry}  %For centering solution box
+% \chead{\hline} % Un-comment to draw line below header
+\thispagestyle{empty}   %For removing header/footer from page 1
+\usepackage{geometry}
+\usepackage[T2A,T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[english,russian]{babel}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage{fancyhdr}
+\usepackage{setspace}
+\usepackage{graphicx}
+\usepackage{colortbl}
+\usepackage{tikz}
+\usepackage{pgf}
+\usepackage{subcaption}
+\usepackage{listings}
+\usepackage{indentfirst}
+
+\usepackage{listings}
+\usepackage{xcolor}
+
+\usepackage{fvextra}
+
+\begin{document}
+
+\begingroup  
+    \centering
+    \LARGE Оптимальное инвестирование и риск-менеджмент\\
+    \LARGE  Контрольная №2\\[0.5em]
+    \large Задания (1, 1, 3, 1, 3)
+    \large \today\\[0.5em]
+    \large Детер Климентий\par
+    \large Прикладная математика и информатика 2310\par
+\endgroup
+% \rule{\textwidth}{0.4pt}
+
+\begin{center}
+    \textbf{Задача 1(Вариант 1)}
+\end{center}
+При каких $a,b$ процесс $B^3_t +t + atB_t + bB_t$ является мартингалом относительно фильтрации $\mathcal{F}_t = \sigma(B_s, s\leq t)$, где $B_t$ — броуновское движение?
+Чему равна $P(B_6 > 0,B_3 <0)$?
+\begin{center}
+    \textbf{Решение}
+\end{center}
+\begin{enumerate}
+    \item Найдем дифференциал $dX_t$ по лемме Ито:
+    $$df = \frac{\partial f}{\partial t}dt + \frac{\partial f}{\partial x}dB_t + \frac{1}{2}\frac{\partial^2 f}{\partial x^2}(dB_t)^2$$
+    Производные:
+    $$\frac{\partial f}{\partial t} = 1 + aB_t$$
+    $$\frac{\partial f}{\partial x} = 3B_t^2 + at + b$$
+    $$\frac{\partial^2 f}{\partial x^2} = 6B_t$$
+    Подставляем в формулу (учитывая $(dB_t)^2 = dt$):
+    $$dX_t = (1 + aB_t)dt + (3B_t^2 + at + b)dB_t + \frac{1}{2}(6B_t)dt$$
+    $$dX_t = (1 + (a+3)B_t)dt + (3B_t^2 + at + b)dB_t$$
+
+    \item Для мартингальности дрейф должен быть тождественно равен нулю:
+    $$1 + (a+3)B_t \equiv 0$$
+    Это должно выполняться для любых $t$ и $B_t$. Поскольку свободный член $1 \neq 0$, уравнение не имеет решений, не зависящих от реализации случайного процесса $B_t$.
+
+    \item Вычисление вероятности:
+    Пусть $X = B_3$ и $Y = B_6 - B_3$. По свойствам винеровского процесса, $X$ и $Y$ — независимые случайные величины с распределением $\mathcal{N}(0, 3)$.
+    Ищем $P(X + Y > 0, X < 0)$, что эквивалентно $P(Y > -X, X < 0)$.
+    Вектор $(X, Y)$ — стандартный двумерный нормальный с независимыми компонентами, поэтому ротационно симметричен.
+    В полярных координатах $X = r\cos\theta$, $Y = r\sin\theta$, угол $\theta \sim \mathrm{Uniform}[0, 2\pi)$.
+    Условие $X < 0$ даёт $\theta \in (\pi/2,\, 3\pi/2)$; условие $Y > -X$, то есть $X + Y > 0$, даёт
+    $\sin\theta + \cos\theta > 0 \iff \theta \in [0,\, 3\pi/4) \cup (7\pi/4,\, 2\pi)$.
+    Пересечение: $\theta \in (\pi/2,\, 3\pi/4)$, длина интервала $3\pi/4 - \pi/2 = \pi/4$.
+    Вероятность: $\dfrac{\pi/4}{2\pi} = \dfrac{1}{8}$.
+\end{enumerate}
+
+\textbf{Ответ:}
+\begin{itemize}
+    \item Таких $a,b$ не существует, процесс не может быть мартингалом из-за неустранимого дрейфа $dt$.
+    \item $P(B_6 > 0, B_3 < 0) = \frac{1}{8} = 0.125$.
+\end{itemize}
+
+\begin{center}
+    \textbf{Задача 2(Вариант 1)}
+\end{center}
+Пусть $\xi_1$,$\xi_2$ — н.о.р.с.в, имеющие равномерное распределение на
+[a,b]. Пусть $\eta = \xi_1 - \xi_2$. Найти эксцесс и асимметрию у $\eta$, а также $VaR_{10\%}(\eta), ESF_{10\%}(\eta)$.
+\begin{center}
+    \textbf{Решение}
+\end{center}
+
+Пусть $c = b-a$. Величина $\eta$ имеет симметричное треугольное распределение на интервале $[-c, c]$.
+Плотность: $f(x) = \frac{c - |x|}{c^2}$. Риск-метрики считаются для распределения потерь $L = -\eta$.
+\begin{enumerate}
+    \item \textbf{Асимметрия и Эксцесс:}
+    $\mathbb{E}[\eta] = 0$. В силу симметрии распределения третий центральный момент равен нулю, следовательно, асимметрия равна 0.
+    Дисперсия:
+    $$Var(\eta) = Var(\xi_1) + Var(\xi_2) = \frac{c^2}{12} + \frac{c^2}{12} = \frac{c^2}{6}$$
+    Четвертый момент:
+    $$\mathbb{E}[\eta^4] = 2 \int_0^c x^4 \frac{c-x}{c^2} dx = \frac{2}{c^2} \left[ c\frac{c^5}{5} - \frac{c^6}{6} \right] = \frac{c^4}{15}$$
+    Эксцесс:
+    $$Kurtosis = \frac{\mathbb{E}[\eta^4]}{Var(\eta)^2} - 3 = \frac{c^4 / 15}{c^4 / 36} - 3 = 2.4 - 3 = -0.6$$
+
+    \item \textbf{Value at Risk ($VaR_{10\%}$):}
+    Условие $P(L > VaR) = 0.1 \implies P(\eta < -VaR) = 0.1$.
+    Функция распределения (левый хвост) для $x \in [-c, 0]$: $F(x) = \frac{(x+c)^2}{2c^2}$.
+    $$\frac{(-VaR+c)^2}{2c^2} = 0.1 \implies (-VaR+c)^2 = 0.2c^2$$
+    $$VaR_{10\%} = c(1 - \sqrt{0.2}) = (b-a)\left(1 - \frac{1}{\sqrt{5}}\right)$$
+
+    \item \textbf{Expected Shortfall ($ESF_{10\%}$):}
+    $$ESF_{\alpha} = \frac{1}{\alpha} \int_0^{\alpha} VaR_p dp$$
+    $$VaR_p = c(1 - \sqrt{2p})$$
+    $$ESF_{0.1} = 10 \int_0^{0.1} c(1 - \sqrt{2p}) dp = 10c \left[ p - \frac{2(2p)^{3/2}}{3\cdot 2} \right]_0^{0.1}$$
+    $$ESF_{0.1} = 10c \left( 0.1 - \frac{0.2\sqrt{0.2}}{3} \right) = (b-a)\left(1 - \frac{2}{3\sqrt{5}}\right)$$
+\end{enumerate}
+
+\textbf{Ответ:}
+\begin{itemize}
+    \item Асимметрия: $0$
+    \item Эксцесс: $-0.6$
+    \item $VaR_{10\%} = (b-a)\left(1 - \frac{1}{\sqrt{5}}\right) \approx 0.553(b-a)$
+    \item $ESF_{10\%} = (b-a)\left(1 - \frac{2}{3\sqrt{5}}\right) \approx 0.702(b-a)$
+\end{itemize}
+
+\begin{center}
+    \textbf{Задача 3(Вариант 3)}
+\end{center}
+Пусть $X_1$,$X_2$ — н.о.р.с.в., имеющие экспоненциальное распределение с параметром $\lambda$. Пусть $Y= X_1 + X_2$. Найти риск-вклад $X_1$ в Y, используя метрики: Componental Expected Shortfall с параметром 0,05, Incremental VaR.
+\begin{center}
+    \textbf{Решение}
+\end{center}
+
+Сумма $Y \sim Gamma(2, \lambda)$ с плотностью $f_Y(y) = \lambda^2 y e^{-\lambda y}$ и $F_Y(y) = 1 - e^{-\lambda y}(1+\lambda y)$.
+Квантиль $y_{\alpha} = VaR_{0.05}(Y)$ находится из уравнения $F_Y(y) = 0.95$.
+По определению: $CES_1 = \mathbb{E}[X_1 \mid Y \geq y_{\alpha}]$ и $IVaR_1 = \mathbb{E}[X_1 \mid Y = y_{\alpha}]$.
+
+\textbf{Обоснование тождеств.}
+По определению Expected Shortfall на уровне $\alpha$:
+$$ES_{\alpha}(Y) = \mathbb{E}[Y \mid Y \geq y_{\alpha}]$$
+Так как $Y = X_1 + X_2$, по линейности условного математического ожидания:
+$$ES_{\alpha}(Y) = \mathbb{E}[X_1 + X_2 \mid Y \geq y_{\alpha}] = \mathbb{E}[X_1 \mid Y \geq y_{\alpha}] + \mathbb{E}[X_2 \mid Y \geq y_{\alpha}]$$
+Поскольку $X_1$ и $X_2$ — независимые и одинаково распределённые, их роли в сумме $Y$ симметричны, поэтому
+$$\mathbb{E}[X_1 \mid Y \geq y_{\alpha}] = \mathbb{E}[X_2 \mid Y \geq y_{\alpha}]$$
+Отсюда $ES_{\alpha}(Y) = 2\mathbb{E}[X_1 \mid Y \geq y_{\alpha}]$, то есть
+$$CES_1 = \frac{1}{2}ES_{\alpha}(Y)$$
+
+Аналогично для Incremental VaR. Так как $VaR_{\alpha}(Y) = y_{\alpha}$, имеем
+$$VaR_{\alpha}(Y) = \mathbb{E}[Y \mid Y = y_{\alpha}] = \mathbb{E}[X_1 \mid Y = y_{\alpha}] + \mathbb{E}[X_2 \mid Y = y_{\alpha}]$$
+В силу той же симметрии $\mathbb{E}[X_1 \mid Y = y_{\alpha}] = \mathbb{E}[X_2 \mid Y = y_{\alpha}]$, откуда
+$$IVaR_1 = \frac{1}{2}VaR_{\alpha}(Y)$$
+
+\begin{enumerate}
+    \item Решение уравнения квантили:
+    Пусть $z = \lambda y_{\alpha}$. $e^{-z}(1+z) = 0.05$. Численное решение даёт $z \approx 4.74386$.
+    $$VaR_{0.05}(Y) = \frac{4.74386}{\lambda}$$
+
+    \item Численный расчёт:
+    $$IVaR_1 = \frac{1}{2}VaR_{0.05}(Y) = \frac{2.37193}{\lambda}$$
+    Общий $ESF_{0.05}(Y)$:
+    $$ESF_{0.05}(Y) = \frac{1}{0.05} \int_{y_{\alpha}}^{\infty} y \lambda^2 y e^{-\lambda y} dy = \frac{20}{\lambda} [e^{-z}(z^2+2z+2)]$$
+    Используя $e^{-z} = \frac{0.05}{1+z}$:
+    $$ESF_{0.05}(Y) = \frac{1}{\lambda} \frac{z^2+2z+2}{z+1} \approx \frac{5.9179}{\lambda}$$
+    $$CES_1 = \frac{1}{2} ESF_{0.05}(Y) \approx \frac{2.95895}{\lambda}$$
+\end{enumerate}
+
+\textbf{Ответ:}
+\begin{itemize}
+    \item $IVaR_1 \approx \frac{2.372}{\lambda}$
+    \item $Componental Expected Shortfall (CES_1) \approx \frac{2.959}{\lambda}$
+\end{itemize}
+
+\begin{center}
+    \textbf{Задача 4(Вариант 1)}
+\end{center}
+Из набора акций (AAPL, TSLA, IBM, AMZN) с 2015 года по конец 2024 года берете c yfinance нужную по счету акцию, соответствующую номеру Вашей фамилии по этой задачи и следующую за ней акцию. В предположении, что безрисковая $\%$ ставка $\dfrac{3.5\%}{12}$ в месяц постройте оптимальный портфель с помощью подхода Келли, а также на тестовой части выборки (2025 год) провести бэктестинг полученной стратегии, найдя норму доходность и Sharpe Ratio. Ограничение: стандартный Pyton + библиотека numpy + оптимизатор на Ваш выбор (если нужен) (cvxopt, например).
+\begin{center}
+    \textbf{Решение}
+\end{center}
+
+
+\begin{center}
+    \textbf{Задача 5(Вариант 3)}
+\end{center}
+Пусть имеется безрисковый актив с $r^0 = 6$ и 2 рисковых с $\mathbb{E}(r^1) = 8$,$\sigma^1 = 5$,$\mathbb{E}(r^2) = 20$,$\sigma^2 = 20$,$corr(r^1,r^2) = 0$. Чему равна максимальная средняя прибыль и в каких пропорциях нужно вкладывать в активы, если $\sigma(r) \leq 15$ (короткие продажи разрешены).
+\begin{center}
+    \textbf{Решение}
+\end{center}
+
+Ковариационная матрица $\Sigma = diag(25, 400)$.\\
+Целевая функция: $\mu_p = w_0 r^0 + w_1 \mu_1 + w_2 \mu_2$.\\
+Ограничения: $w_0 + w_1 + w_2 = 1$ и $w_1^2 \sigma_1^2 + w_2^2 \sigma_2^2 \leq 225$.\\
+\textbf{Множители Лагранжа}
+\\Ограничение активно. Функция Лагранжа:
+$$L = 6 + w_1(2) + w_2(14) - \lambda(25w_1^2 + 400w_2^2 - 225)$$
+Условия ККТ:
+$$\frac{\partial L}{\partial w_1} = 2 - 50\lambda w_1 = 0 \implies w_1 = \frac{1}{25\lambda}$$
+$$\frac{\partial L}{\partial w_2} = 14 - 800\lambda w_2 = 0 \implies w_2 = \frac{7}{400\lambda}$$
+Подставляем в ограничение риска:
+$$25\left(\frac{1}{25\lambda}\right)^2 + 400\left(\frac{7}{400\lambda}\right)^2 = 225 \implies \lambda = \frac{\sqrt{65}}{300}$$
+Подстановка $\lambda$ обратно дает те же самые значения $w_1$ и $w_2$.
+
+\textbf{Ответ:}
+\begin{itemize}
+    \item Максимальная средняя прибыль: $6 + \frac{3\sqrt{260}}{4} \approx 18.093\%$
+    \item Веса в рисковые активы: $w_1 = \frac{24}{\sqrt{260}} \approx 148.8\%$, $w_2 = \frac{10.5}{\sqrt{260}} \approx 65.1\%$
+    \item Доля в безрисковом активе: $w_0 = 1 - \frac{34.5}{\sqrt{260}} \approx -114.0\%$ (кредитная позиция)
+\end{itemize}
+\end{document}
