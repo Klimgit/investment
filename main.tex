@@ -26,6 +26,7 @@
 \usepackage{xcolor}
 
 \usepackage{fvextra}
+\usepackage{hyperref}
 
 \begin{document}
 
@@ -92,7 +93,7 @@
 Пусть $c = b-a$. Величина $\eta$ имеет симметричное треугольное распределение на интервале $[-c, c]$.
 Плотность: $f(x) = \frac{c - |x|}{c^2}$. Риск-метрики считаются для распределения потерь $L = -\eta$.
 \begin{enumerate}
-    \item \textbf{Асимметрия и Эксцесс:}
+    \item Асимметрия и Эксцесс:
     $\mathbb{E}[\eta] = 0$. В силу симметрии распределения третий центральный момент равен нулю, следовательно, асимметрия равна 0.
     Дисперсия:
     $$Var(\eta) = Var(\xi_1) + Var(\xi_2) = \frac{c^2}{12} + \frac{c^2}{12} = \frac{c^2}{6}$$
@@ -101,13 +102,13 @@
     Эксцесс:
     $$Kurtosis = \frac{\mathbb{E}[\eta^4]}{Var(\eta)^2} - 3 = \frac{c^4 / 15}{c^4 / 36} - 3 = 2.4 - 3 = -0.6$$
 
-    \item \textbf{Value at Risk ($VaR_{10\%}$):}
+    \item Value at Risk ($VaR_{10\%}$):
     Условие $P(L > VaR) = 0.1 \implies P(\eta < -VaR) = 0.1$.
     Функция распределения (левый хвост) для $x \in [-c, 0]$: $F(x) = \frac{(x+c)^2}{2c^2}$.
     $$\frac{(-VaR+c)^2}{2c^2} = 0.1 \implies (-VaR+c)^2 = 0.2c^2$$
     $$VaR_{10\%} = c(1 - \sqrt{0.2}) = (b-a)\left(1 - \frac{1}{\sqrt{5}}\right)$$
 
-    \item \textbf{Expected Shortfall ($ESF_{10\%}$):}
+    \item Expected Shortfall ($ESF_{10\%}$):
     $$ESF_{\alpha} = \frac{1}{\alpha} \int_0^{\alpha} VaR_p dp$$
     $$VaR_p = c(1 - \sqrt{2p})$$
     $$ESF_{0.1} = 10 \int_0^{0.1} c(1 - \sqrt{2p}) dp = 10c \left[ p - \frac{2(2p)^{3/2}}{3\cdot 2} \right]_0^{0.1}$$
@@ -176,7 +177,15 @@ $$IVaR_1 = \frac{1}{2}VaR_{\alpha}(Y)$$
 \begin{center}
     \textbf{Решение}
 \end{center}
+Код и вычисления: \href{https://github.com/Klimgit/investment/blob/main/task4.ipynb}{github.com/Klimgit/investment/blob/main/task4.ipynb}.
 
+\textbf{Ответ:}
+\begin{itemize}
+    \item Оптимальные веса по Келли: $w_{\mathrm{AAPL}} \approx 2{,}31$, $w_{\mathrm{TSLA}} \approx 0{,}33$
+    \item Доля в безрисковом активе: $w_0 \approx -1{,}64$ (кредитная позиция)
+    \item Норма доходности на тестовой выборке (2025): $\approx 19{,}5\%$
+    \item Sharpe Ratio: $\approx 0{,}26$
+\end{itemize}
 
 \begin{center}
     \textbf{Задача 5(Вариант 3)}
@@ -186,23 +195,42 @@ $$IVaR_1 = \frac{1}{2}VaR_{\alpha}(Y)$$
     \textbf{Решение}
 \end{center}
 
-Ковариационная матрица $\Sigma = diag(25, 400)$.\\
-Целевая функция: $\mu_p = w_0 r^0 + w_1 \mu_1 + w_2 \mu_2$.\\
-Ограничения: $w_0 + w_1 + w_2 = 1$ и $w_1^2 \sigma_1^2 + w_2^2 \sigma_2^2 \leq 225$.\\
-\textbf{Множители Лагранжа}
-\\Ограничение активно. Функция Лагранжа:
-$$L = 6 + w_1(2) + w_2(14) - \lambda(25w_1^2 + 400w_2^2 - 225)$$
+Из $w_0 + w_1 + w_2 = 1$ получаем $w_0 = 1 - w_1 - w_2$, подставляем в $\mu_p$:
+$$\mu_p = 6 + w_1(8-6) + w_2(20-6) = 6 + 2w_1 + 14w_2$$
+Ограничение активно (иначе можно было бы взять ещё более доходный портфель), поэтому
+$$25w_1^2 + 400w_2^2 = 225.$$
+Функция Лагранжа:
+$$L = 6 + 2w_1 + 14w_2 - \lambda(25w_1^2 + 400w_2^2 - 225)$$
 Условия ККТ:
 $$\frac{\partial L}{\partial w_1} = 2 - 50\lambda w_1 = 0 \implies w_1 = \frac{1}{25\lambda}$$
 $$\frac{\partial L}{\partial w_2} = 14 - 800\lambda w_2 = 0 \implies w_2 = \frac{7}{400\lambda}$$
 Подставляем в ограничение риска:
-$$25\left(\frac{1}{25\lambda}\right)^2 + 400\left(\frac{7}{400\lambda}\right)^2 = 225 \implies \lambda = \frac{\sqrt{65}}{300}$$
-Подстановка $\lambda$ обратно дает те же самые значения $w_1$ и $w_2$.
+$$25\left(\frac{1}{25\lambda}\right)^2 + 400\left(\frac{7}{400\lambda}\right)^2 = 225
+\implies \frac{65}{400\lambda^2} = 225
+\implies \lambda = \frac{\sqrt{65}}{300}$$
+
+\begin{center}\textbf{Вычисление весов.}\end{center}    
+Подставляем $\lambda$ в формулы для $w_1$ и $w_2$:
+$$w_1 = \frac{1}{25 \cdot \frac{\sqrt{65}}{300}} = \frac{300}{25\sqrt{65}} = \frac{12}{\sqrt{65}}, \qquad
+w_2 = \frac{7}{400 \cdot \frac{\sqrt{65}}{300}} = \frac{2100}{400\sqrt{65}} = \frac{21}{4\sqrt{65}}.$$
+$$w_1 = \frac{12 \cdot 2}{2\sqrt{65}} = \frac{24}{\sqrt{260}}, \qquad
+w_2 = \frac{21/2}{(4/2)\sqrt{65}} = \frac{10.5}{\sqrt{260}}.$$
+Доля в безрисковом активе:
+$$w_0 = 1 - w_1 - w_2 = 1 - \frac{24 + 10.5}{\sqrt{260}} = 1 - \frac{34.5}{\sqrt{260}}.$$
+
+\begin{center}\textbf{Максимальная средняя прибыль.}\end{center}
+Подставляем веса в $\mu_p = 6 + 2w_1 + 14w_2$ :
+$$\mu_p = 6 + 2 \cdot \frac{12}{\sqrt{65}} + 14 \cdot \frac{21}{4\sqrt{65}}
+= 6 + \frac{24}{\sqrt{65}} + \frac{294}{4\sqrt{65}}
+= 6 + \frac{390}{4\sqrt{65}}.$$
+Домножаем дробь на $\dfrac{\sqrt{65}}{\sqrt{65}}$:
+$$\frac{390}{4\sqrt{65}} = \frac{390\sqrt{65}}{260} = \frac{3\sqrt{65}}{2}.$$
+Эквивалентная запись: $\dfrac{3\sqrt{65}}{2} = \dfrac{3 \cdot 2\sqrt{65}}{4} = \dfrac{3\sqrt{260}}{4}$.
 
 \textbf{Ответ:}
 \begin{itemize}
-    \item Максимальная средняя прибыль: $6 + \frac{3\sqrt{260}}{4} \approx 18.093\%$
-    \item Веса в рисковые активы: $w_1 = \frac{24}{\sqrt{260}} \approx 148.8\%$, $w_2 = \frac{10.5}{\sqrt{260}} \approx 65.1\%$
-    \item Доля в безрисковом активе: $w_0 = 1 - \frac{34.5}{\sqrt{260}} \approx -114.0\%$ (кредитная позиция)
+    \item Максимальная средняя прибыль: $\mu_p = 6 + \dfrac{3\sqrt{260}}{4} = 6 + \dfrac{3\sqrt{65}}{2} \approx 18{,}093\%$
+    \item Веса в рисковые активы: $w_1 = \dfrac{24}{\sqrt{260}} = \dfrac{12}{\sqrt{65}} \approx 148{,}8\%$, $w_2 = \dfrac{10.5}{\sqrt{260}} = \dfrac{21}{4\sqrt{65}} \approx 65{,}1\%$
+    \item Доля в безрисковом активе: $w_0 = 1 - \dfrac{34.5}{\sqrt{260}} \approx -114{,}0\%$ (кредитная позиция)
 \end{itemize}
 \end{document}
